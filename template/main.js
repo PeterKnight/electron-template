@@ -42,12 +42,9 @@ const newWin = () => {
 			win.webContents.openDevTools()
 		}).catch(err => console.log('An error occurred: ', err))
 		// Wait for nuxt to build
-		const pollServer = () => {
-			http.get(_NUXT_URL_, (res) => {
-				if (res.statusCode === 200) { win.loadURL(_NUXT_URL_) } else { setTimeout(pollServer, 300) }
-			}).on('error', pollServer)
-		}
-		pollServer()
+		nuxt.hook('build:done', () => {
+    			win.loadURL(_NUXT_URL_) 
+  		})
 	} else { return win.loadURL(_NUXT_URL_) }
 }
 app.on('ready', newWin)
